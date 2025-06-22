@@ -40,10 +40,11 @@ export async function POST(request: Request) {
     await db.collection("interviews").add(interview);
 
     return Response.json({ success: true }, { status: 200 });
-  } catch (error) {
-    console.error("Error:", error);
-    return Response.json({ success: false, error: error }, { status: 500 });
-  }
+// filepath: d:\clone repo\ai_mock_interviews\app\api\vapi\generate\route.ts
+} catch (error) {
+  console.error("Error:", error);
+  return Response.json({ success: false, error: error instanceof Error ? error.message : String(error) }, { status: 500 });
+}
 }
 
 export async function GET() {
