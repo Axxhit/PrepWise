@@ -6,13 +6,20 @@ import { getFirestore } from "firebase-admin/firestore";
 function initFirebaseAdmin() {
   const apps = getApps();
 
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error("Missing Firebase Admin environment variables.");
+  }
+
   if (!apps.length) {
     initializeApp({
       credential: cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        // Replace newlines in the private key 
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"), // TO EGT rid of escaped newlines
+        projectId,
+        clientEmail,
+        privateKey,
       }),
     });
   }
@@ -22,5 +29,6 @@ function initFirebaseAdmin() {
     db: getFirestore(),
   };
 }
+
 
 export const { auth, db } = initFirebaseAdmin();
